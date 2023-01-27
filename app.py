@@ -11,6 +11,11 @@ from utils.enum import get_enum_values
 load_dotenv()
 
 API_PASSWORD = os.getenv("API_PASSWORD")
+API_HOST = os.getenv("API_HOST")
+
+logger.debug(f"API HOST: {API_HOST}")
+
+logger.debug(f"API PASS: {API_PASSWORD}")
 
 
 class Target(str, Enum):
@@ -32,8 +37,8 @@ st.set_page_config(layout="wide")
 @st.cache
 def infer_ctr(request_json: dict) -> tuple:
     request_kwargs = {"json": request_json, "params": {"password": API_PASSWORD}}
-    classification_result = requests.post("http://localhost:8001/classification", **request_kwargs).json()[0]
-    regression_result = requests.post("http://localhost:8001/regression", **request_kwargs).json()[0]
+    classification_result = requests.post(f"{API_HOST}/classification", **request_kwargs).json()[0]
+    regression_result = requests.post(f"{API_HOST}/regression", **request_kwargs).json()[0]
     return classification_result, regression_result
 
 
@@ -85,7 +90,7 @@ def ctr_pred():
 @st.cache
 def infer_mlm(masked_text: str):
     mlm_request_params = {"masked_text": masked_text, "password": API_PASSWORD}
-    mlm_response = requests.post("http://localhost:8001/mlm", params=mlm_request_params).json()
+    mlm_response = requests.post(f"{API_HOST}/mlm", params=mlm_request_params).json()
     return mlm_response
 
 
