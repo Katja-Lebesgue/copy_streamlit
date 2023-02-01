@@ -126,7 +126,7 @@ def ctr_prediction(request_json: dict):
 
     df_style.format(formatter=format_func)
 
-    st.table(df_style)
+    st.dataframe(df_style)
 
 
 # @st.cache

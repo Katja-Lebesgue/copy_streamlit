@@ -52,7 +52,7 @@ def mlm_column(model_name: MLModel, masked_text: str, unmasked_words_color: str 
     df.columns = map(lambda x: f"#{x}", list(range(1, len(df.columns) + 1)))
     df.index = map(lambda x: f"??? {x}", list(range(1, len(df.index) + 1)))
 
-    st.table(df)
+    st.dataframe(df)
 
 
 def mlm_tab():
