@@ -22,6 +22,13 @@ from utils.enum import get_enum_values
 API_HOST = os.getenv("API_HOST")
 
 
+model_frontend_format = {
+    "classification3": "CTR interval",
+    "classification3_text": "CTR interval based on text only",
+    "regression": "CTR value",
+}
+
+
 class CTRModel(str, Enum):
     classification3 = "classification3"
     regression = "regression"
@@ -48,44 +55,49 @@ def st_shap(plot, height=None):
 
 def ctr_tab():
 
-    text = st.text_area(
-        label="Ad copy",
-        height=1,
-        value="Turn heads this summer with pieces from the same manufacturers as Reformation, Zimmermann, Faithfull the Brand and more, for 50-80% less.",
-        key="ctr_text",
-    )
+    col1, col2 = st.columns(2)
 
-    aov = st.number_input(label="Average order value (in USD)", step=10, value=200)
+    with col1:
+        text = st.text_area(
+            label="Ad copy",
+            height=215,
+            value="Turn heads this summer with pieces from the same manufacturers as Reformation, Zimmermann, Faithfull the Brand and more, for 50-80% less.",
+            key="ctr_text",
+        )
 
-    target = st.selectbox(
-        "Target",
-        tuple(get_enum_values(Target, sort=True)),
-        format_func=lambda x: x,
-        key="target",
-    )
+    with col2:
+        aov = st.number_input(label="Average order value (in USD)", step=10, value=200)
 
-    creative_type = st.selectbox(
-        "Creative type",
-        tuple(get_enum_values(CreativeType, sort=True)),
-        format_func=lambda x: x,
-        key="creative_type",
-    )
+        target = st.selectbox(
+            "Target",
+            tuple(get_enum_values(Target, sort=True)),
+            format_func=lambda x: x,
+            key="target",
+        )
+
+        creative_type = st.selectbox(
+            "Creative type",
+            tuple(get_enum_values(CreativeType, sort=True)),
+            format_func=lambda x: x,
+            key="creative_type",
+        )
 
     request_json = {"text": text, "aov": aov, "target": target, "creative_type": creative_type}
 
     st.subheader("CTR prediction")
     ctr_prediction(request_json=request_json)
 
-    st.subheader("Shapley values")
+    st.subheader("Word impacts")
+    st.markdown("<p>See how each word impacts final prediction in every model.</p>", unsafe_allow_html=True)
 
     model_type = st.selectbox(
         "Model",
         tuple(get_enum_values(CTRModel, sort=True)),
-        format_func=lambda x: x,
+        format_func=lambda x: model_frontend_format[x],
         key="model_type",
     )
 
-    get_shap = st.button(label="get shap")
+    get_shap = st.button(label="Analyse")
 
     if get_shap:
         shap_analysis(request_json=request_json, model_type=model_type)
@@ -100,7 +112,9 @@ def ctr_prediction(request_json: dict):
         result = infer_ctr(request_json=request_json, model_type=model_type)
         result_dict[model_type] = [result]
 
-    df = pd.DataFrame(result_dict, index=["ctr (%)"]).T
+    df = pd.DataFrame(result_dict, index=["ctr (%)"])
+    df.columns = [model_frontend_format[col] for col in df.columns]
+    df = df.T
 
     df_style = df.style
 

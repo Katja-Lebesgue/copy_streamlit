@@ -43,12 +43,14 @@ def mlm_column(model_name: MLModel, masked_text: str, unmasked_words_color: str 
 
     unmasked_text = f"<p> {unmasked_text} </p>"
 
-    st.caption("Unmasked text")
+    st.caption("Word predictions")
     st.markdown(unmasked_text, unsafe_allow_html=True)
 
     st.caption("Most likely words")
 
     df = pd.DataFrame(mlm_response).T
+    df.columns = map(lambda x: f"#{x}", list(range(1, len(df.columns) + 1)))
+    df.index = map(lambda x: f"??? {x}", list(range(1, len(df.index) + 1)))
 
     st.table(df)
 
@@ -60,14 +62,21 @@ def mlm_tab():
         height=1,
         value="Turn heads this ??? with pieces from the same ??? as Reformation, Zimmermann, Faithfull the Brand and more, for ??? 50-80% ???. Buy now ??? ⭐⭐⭐⭐???",
         key="mlm_text",
+        help="Enter ad copy and replace words you want our models to predict with three question marks (???).",
     )
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("WikiModel")
+        st.info(
+            "This model was trained on Wikipedia corpus and has a generally well understanding of English language."
+        )
         mlm_column(model_name=MLModel.wiki, masked_text=masked_text, unmasked_words_color="Crimson")
 
     with col2:
         st.subheader("AdModel")
+        st.info(
+            "This model was trained on copies of our users and is therefore more ad-specialized.",
+        )
         mlm_column(model_name=MLModel.ad, masked_text=masked_text, unmasked_words_color="DarkCyan")
