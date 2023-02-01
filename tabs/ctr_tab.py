@@ -128,6 +128,8 @@ def ctr_prediction(request_json: dict):
 
     st.dataframe(df_style)
 
+    st.write("hohoho")
+
 
 # @st.cache
 def infer_ctr(request_json: dict, model_type: CTRModel) -> tuple:
