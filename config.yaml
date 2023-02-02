@@ -1,0 +1,13 @@
+credentials:
+  usernames:
+    lebeg:
+      email: sanjinjf7h@gmail.com
+      name: lebeg
+      password: "$2b$12$haQXb0e.QKw9H3VO/YaEQOHtD4ebSjhx/iZG9cypSik3u6/u6oB62"
+cookie:
+  expiry_days: 30
+  key: some_signature_key
+  name: some_cookie_name
+preauthorized:
+  emails:
+  - melsby@gmail.com
