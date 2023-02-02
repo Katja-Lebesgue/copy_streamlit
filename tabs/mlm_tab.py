@@ -16,6 +16,33 @@ class MLModel(str, Enum):
     ad = "ad"
 
 
+def mlm_tab():
+
+    masked_text = st.text_area(
+        label="Ad copy",
+        height=1,
+        value="Turn heads this ??? with pieces from the same ??? as Reformation, Zimmermann, Faithfull the Brand and more, for ??? 50-80% ???. Buy now ??? ⭐⭐⭐⭐???",
+        key="mlm_text",
+        help="Enter ad copy and replace words you want our models to predict with three question marks (???).",
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Wiki Model")
+        st.info(
+            "This model was trained on Wikipedia corpus and has a generally well understanding of English language."
+        )
+        mlm_column(model_name=MLModel.wiki, masked_text=masked_text, unmasked_words_color="Crimson")
+
+    with col2:
+        st.subheader("Lebesgue AdModel")
+        st.info(
+            "This model was trained on Lebesgue users data and is therefore more ad-specialized.",
+        )
+        mlm_column(model_name=MLModel.ad, masked_text=masked_text, unmasked_words_color="DarkCyan")
+
+
 @st.cache
 def infer_mlm(masked_text: str, model_name: MLModel):
     mlm_request_params = {"masked_text": masked_text, "model_name": model_name}
@@ -53,30 +80,3 @@ def mlm_column(model_name: MLModel, masked_text: str, unmasked_words_color: str 
     df.index = map(lambda x: f"??? {x}", list(range(1, len(df.index) + 1)))
 
     st.dataframe(df)
-
-
-def mlm_tab():
-
-    masked_text = st.text_area(
-        label="Ad copy",
-        height=1,
-        value="Turn heads this ??? with pieces from the same ??? as Reformation, Zimmermann, Faithfull the Brand and more, for ??? 50-80% ???. Buy now ??? ⭐⭐⭐⭐???",
-        key="mlm_text",
-        help="Enter ad copy and replace words you want our models to predict with three question marks (???).",
-    )
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("WikiModel")
-        st.info(
-            "This model was trained on Wikipedia corpus and has a generally well understanding of English language."
-        )
-        mlm_column(model_name=MLModel.wiki, masked_text=masked_text, unmasked_words_color="Crimson")
-
-    with col2:
-        st.subheader("AdModel")
-        st.info(
-            "This model was trained on copies of our users and is therefore more ad-specialized.",
-        )
-        mlm_column(model_name=MLModel.ad, masked_text=masked_text, unmasked_words_color="DarkCyan")
