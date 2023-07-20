@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "copy-streamlit"
+version = "0.1.0"
+description = ""
+authors = ["sanjin-lebesgue <sanjin@lebesgue.io>"]
+readme = "README.md"
+packages = [{include = "copy_streamlit"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+bcrypt = "^4.0.1"
+black = "^23.7.0"
+ipykernel = "^6.24.0"
+matplotlib = "^3.7.2"
+numba = "0.57.1"
+pandas = "1.5.3"
+pillow = "9.4.0"
+protobuf = "3.20.3"
+pydotenv = "0.0.7"
+python-dotenv = "0.21.1"
+scikit-learn = "1.2.1"
+streamlit = "1.17.0"
+tqdm = "4.64.1"
+altair = "4.2.1"
+streamlit-option-menu = "0.3.2"
+streamlit-authenticator = "0.2.1"
+loguru = "^0.7.0"
+shap = "0.41.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
