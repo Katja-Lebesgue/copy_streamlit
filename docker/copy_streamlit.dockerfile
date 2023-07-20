@@ -14,4 +14,8 @@ RUN bash -c "poetry install --no-root"
 
 COPY . /app
 
-CMD ["streamlit", "run", "app.py"]
+# RUN source .venv/bin/activate
+
+# CMD ["streamlit", "run", "app.py"]
+
+CMD ["sleep", "infinity"]
