@@ -1,0 +1,7 @@
+services:
+  copy_streamlit:
+    build:
+      context: .
+      dockerfile: docker/copy_streamlit.dockerfile
+    volumes:
+      - .:/app
