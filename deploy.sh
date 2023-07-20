@@ -1,4 +1,4 @@
-. venv/bin/activate
+. .venv/bin/activate
 
 pip freeze > requirements.txt
 
