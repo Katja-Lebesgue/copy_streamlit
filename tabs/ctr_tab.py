@@ -9,7 +9,7 @@ import pandas as pd
 from loguru import logger
 import numpy as np
 
-import shap
+# import shap
 from matplotlib import pyplot as plt
 
 import streamlit.components.v1 as components
@@ -87,20 +87,20 @@ def ctr_tab():
     st.subheader("CTR prediction")
     ctr_prediction(request_json=request_json)
 
-    st.subheader("Word impacts")
-    st.markdown("<p>See how each word impacts final prediction in every model.</p>", unsafe_allow_html=True)
+    # st.subheader("Word impacts")
+    # st.markdown("<p>See how each word impacts final prediction in every model.</p>", unsafe_allow_html=True)
 
-    model_type = st.selectbox(
-        "Model",
-        tuple(get_enum_values(CTRModel, sort=True)),
-        format_func=lambda x: model_frontend_format[x],
-        key="model_type",
-    )
+    # model_type = st.selectbox(
+    #     "Model",
+    #     tuple(get_enum_values(CTRModel, sort=True)),
+    #     format_func=lambda x: model_frontend_format[x],
+    #     key="model_type",
+    # )
 
-    get_shap = st.button(label="Analyse")
+    # get_shap = st.button(label="Analyse")
 
-    if get_shap:
-        shap_analysis(request_json=request_json, model_type=model_type)
+    # if get_shap:
+    #     shap_analysis(request_json=request_json, model_type=model_type)
 
 
 def ctr_prediction(request_json: dict):
@@ -135,33 +135,33 @@ def infer_ctr(request_json: dict, model_type: CTRModel) -> tuple:
     return result
 
 
-def shap_analysis(request_json: dict, model_type: CTRModel = CTRModel.classification3):
-    shap_kwargs = get_shap_values(request_json=request_json, model_type=model_type).copy()
-    shap_kwargs = unpack_shap_kwargs(shap_kwargs=shap_kwargs)
-    shap_values = shap.Explanation(**shap_kwargs)
-    st_plot_text_shap(shap_val=shap_values, height=400)
+# def shap_analysis(request_json: dict, model_type: CTRModel = CTRModel.classification3):
+
+#     shap_kwargs = get_shap_values(request_json=request_json, model_type=model_type).copy()
+#     shap_kwargs = unpack_shap_kwargs(shap_kwargs=shap_kwargs)
+#     shap_values = shap.Explanation(**shap_kwargs)
+#     st_plot_text_shap(shap_val=shap_values, height=400)
 
 
-@st.cache
-def get_shap_values(request_json: dict, model_type: CTRModel):
-    logger.debug(f"{request_json = }, {model_type = }")
-    request_kwargs = {"json": request_json, "params": {"model_type": model_type}}
-    result = requests.post(f"{API_HOST}/shap", **request_kwargs).json()
-    return result
+# # @st.cache
+# def get_shap_values(request_json: dict, model_type: CTRModel):
+#     request_kwargs = {"json": request_json, "params": {"model_type": model_type}}
+#     result = requests.post(f"{API_HOST}/shap", **request_kwargs).json()
+#     return result
 
 
-def unpack_shap_kwargs(shap_kwargs: dict):
-    unpacked = shap_kwargs.copy()
-    unpacked.update({k: np.array(v) for k, v in shap_kwargs.items() if k in ["values", "base_values"]})
-    unpacked["data"] = (np.array(shap_kwargs["data"]),)
-    return unpacked
+# def unpack_shap_kwargs(shap_kwargs: dict):
+#     unpacked = shap_kwargs.copy()
+#     unpacked.update({k: np.array(v) for k, v in shap_kwargs.items() if k in ["values", "base_values"]})
+#     unpacked["data"] = (np.array(shap_kwargs["data"]),)
+#     return unpacked
 
 
-def st_plot_text_shap(shap_val, height=None):
-    InteractiveShell().instance()
-    with capture.capture_output() as cap:
-        shap.plots.text(shap_val)
-    components.html(cap.outputs[0].data["text/html"], height=height, scrolling=True)
+# def st_plot_text_shap(shap_val, height=None):
+#     InteractiveShell().instance()
+#     with capture.capture_output() as cap:
+#         shap.plots.text(shap_val)
+#     components.html(cap.outputs[0].data["text/html"], height=height, scrolling=True)
 
 
 def is_regression(model_type: CTRModel):
