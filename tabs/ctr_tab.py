@@ -166,7 +166,3 @@ def st_plot_text_shap(shap_val, height=None):
 
 def is_regression(model_type: CTRModel):
     return "regression" in model_type
-
-
-
-"hahahahah"
