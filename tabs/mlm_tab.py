@@ -17,7 +17,6 @@ class MLModel(str, Enum):
 
 
 def mlm_tab():
-
     masked_text = st.text_area(
         label="Ad copy",
         height=1,
@@ -43,7 +42,7 @@ def mlm_tab():
         mlm_column(model_name=MLModel.ad, masked_text=masked_text, unmasked_words_color="DarkCyan")
 
 
-@st.cache
+@st.cache_data
 def infer_mlm(masked_text: str, model_name: MLModel):
     mlm_request_params = {"masked_text": masked_text, "model_name": model_name}
     mlm_response = requests.post(f"{API_HOST}/mlm", params=mlm_request_params).json()
@@ -51,7 +50,6 @@ def infer_mlm(masked_text: str, model_name: MLModel):
 
 
 def mlm_column(model_name: MLModel, masked_text: str, unmasked_words_color: str = "red"):
-
     mlm_response = infer_mlm(masked_text=masked_text, model_name=model_name)
 
     mask_predictions = list(mlm_response.values())

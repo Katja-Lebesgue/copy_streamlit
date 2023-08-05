@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import streamlit as st
 from streamlit.components import v1 as components
 from streamlit_option_menu import option_menu
@@ -111,24 +112,22 @@ def ctr_prediction(request_json: dict):
         result = infer_ctr(request_json=request_json, model_type=model_type)
         result_dict[model_type] = [result]
 
-    df = pd.DataFrame(result_dict, index=["ctr (%)"])
+    df = pd.DataFrame(result_dict, index=["ctr"])
     df.columns = [model_frontend_format[col] for col in df.columns]
     df = df.T
 
-    df_style = df.style
-
-    def format_func(x):
+    def _format_func(x):
+        logger.debug(f"{x = }")
         if type(x) == list:
-            return [round(a * 100, 2) for a in x]
+            return "-".join([str(round(a * 100, 2)) for a in x]) + "%"
         else:
-            return round(x * 100, 2)
+            return f"{round(x * 100, 2)}%"
 
-    df_style.format(formatter=format_func)
+    df = df.applymap(_format_func)
+    st.dataframe(df)
 
-    st.dataframe(df_style)
 
-
-# @st.cache
+@st.cache_data
 def infer_ctr(request_json: dict, model_type: CTRModel) -> tuple:
     request_kwargs = {"json": [request_json], "params": {"model_type": model_type}}
     result = requests.post(f"{API_HOST}/ctr", **request_kwargs).json()[0]
@@ -142,7 +141,7 @@ def shap_analysis(request_json: dict, model_type: CTRModel = CTRModel.classifica
     st_plot_text_shap(shap_val=shap_values, height=400)
 
 
-# @st.cache
+@st.cache_data
 def get_shap_values(request_json: dict, model_type: CTRModel):
     request_kwargs = {"json": request_json, "params": {"model_type": model_type}}
     result = requests.post(f"{API_HOST}/shap", **request_kwargs).json()

@@ -167,3 +167,5 @@ venv/
 
 tmp.py
 tmp.ipynb
+
+requirements.txt
